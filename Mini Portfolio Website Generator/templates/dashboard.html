@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Portfolio Generator{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h2 class="mb-4">Welcome, {{ current_user.username }}!</h2>
+        
+        {% if portfolio %}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3>Your Portfolio</h3>
+                </div>
+                <div class="card-body">
+                    <h4>{{ portfolio.name }}</h4>
+                    <p class="text-muted">Last updated: {{ portfolio.updated_at.strftime('%Y-%m-%d %H:%M') }}</p>
+                    
+                    <div class="mt-3">
+                        <a href="{{ url_for('preview_portfolio', username=current_user.username) }}" 
+                           class="btn btn-primary me-2" target="_blank">
+                            <i class="bi bi-eye"></i> Preview
+                        </a>
+                        <a href="{{ url_for('edit_portfolio') }}" class="btn btn-secondary">
+                            <i class="bi bi-pencil"></i> Edit
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="card">
+                <div class="card-body text-center">
+                    <h4>You haven't created a portfolio yet</h4>
+                    <p class="text-muted">Get started by creating your portfolio</p>
+                    <a href="{{ url_for('create_portfolio') }}" class="btn btn-primary">
+                        <i class="bi bi-plus-circle"></i> Create Portfolio
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %} 

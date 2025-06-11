@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ data.name }} - Portfolio</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .hero-section {
+            background: linear-gradient(135deg, #6B73FF 0%, #000DFF 100%);
+            color: white;
+            padding: 100px 0;
+            margin-bottom: 50px;
+        }
+        .skill-tag {
+            background: #e9ecef;
+            padding: 8px 15px;
+            border-radius: 20px;
+            margin: 5px;
+            display: inline-block;
+        }
+        .timeline {
+            position: relative;
+            padding: 20px 0;
+        }
+        .timeline-item {
+            padding: 20px;
+            border-left: 2px solid #dee2e6;
+            position: relative;
+            margin-left: 20px;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -9px;
+            top: 24px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #0d6efd;
+        }
+        .project-card {
+            transition: transform 0.3s ease;
+        }
+        .project-card:hover {
+            transform: translateY(-5px);
+        }
+        .contact-icon {
+            font-size: 2rem;
+            margin: 10px;
+            color: #0d6efd;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Animation -->
+    <div class="loading">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <!-- Theme Toggle -->
+    <button class="theme-toggle" title="Toggle Theme">
+        <i class="bi bi-moon-fill"></i>
+    </button>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">{{ data.name }}</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#skills">Skills</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#education">Education</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#projects">Projects</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contact">Contact</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('download') }}" target="_blank">
+                            <i class="bi bi-download"></i> Download
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-bg"></div>
+        <div class="container text-center hero-content">
+            <h1 class="display-4 fade-in">{{ data.name }}</h1>
+            <p class="lead typed-text fade-in"></p>
+            <div class="mt-4 fade-in">
+                <a href="#contact" class="btn btn-light btn-lg">Get in Touch</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-5">
+        <div class="container">
+            <h2 class="text-center mb-4 fade-in">About Me</h2>
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <p class="lead text-center fade-in">{{ data.bio }}</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="py-5 bg-light">
+        <div class="container">
+            <h2 class="text-center mb-4 fade-in">Skills</h2>
+            <div class="text-center fade-in">
+                {% for skill in data.skills %}
+                <span class="skill-tag">{{ skill }}</span>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Education Section -->
+    <section id="education" class="py-5">
+        <div class="container">
+            <h2 class="text-center mb-4 fade-in">Education</h2>
+            <div class="timeline">
+                {% for edu in data.education %}
+                <div class="timeline-item fade-in">
+                    <h4>{{ edu.course }}</h4>
+                    <p class="text-muted">{{ edu.year }}</p>
+                    <p>{{ edu.institute }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="py-5 bg-light">
+        <div class="container">
+            <h2 class="text-center mb-4 fade-in">Projects</h2>
+            <div class="row">
+                {% for project in data.projects %}
+                <div class="col-md-6 mb-4 fade-in">
+                    <div class="card project-card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ project.name }}</h5>
+                            <p class="card-text">{{ project.description }}</p>
+                            {% if project.tech %}
+                            <p class="text-muted">
+                                <small>Tech Stack: {{ project.tech }}</small>
+                            </p>
+                            {% endif %}
+                            <a href="{{ project.link }}" class="btn btn-primary" target="_blank">View Project</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-5">
+        <div class="container">
+            <h2 class="text-center mb-4 fade-in">Contact Me</h2>
+            <div class="text-center fade-in">
+                <a href="mailto:{{ data.contact.email }}" class="contact-icon" title="Email">
+                    <i class="bi bi-envelope-fill"></i>
+                </a>
+                <a href="{{ data.contact.github }}" target="_blank" class="contact-icon" title="GitHub">
+                    <i class="bi bi-github"></i>
+                </a>
+                <a href="{{ data.contact.linkedin }}" target="_blank" class="contact-icon" title="LinkedIn">
+                    <i class="bi bi-linkedin"></i>
+                </a>
+                {% if data.contact.instagram %}
+                <a href="{{ data.contact.instagram }}" target="_blank" class="contact-icon" title="Instagram">
+                    <i class="bi bi-instagram"></i>
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light py-4">
+        <div class="container text-center">
+            <p class="mb-2">&copy; 2024 {{ data.name }}. All rights reserved. | Created by Yogendra Bhange</p>
+            <div class="social-links">
+                <a href="https://github.com/yogendra-27-bhange" target="_blank" class="text-light me-3">
+                    <i class="bi bi-github"></i> GitHub
+                </a>
+                <a href="https://www.instagram.com/yogi.__27" target="_blank" class="text-light">
+                    <i class="bi bi-instagram"></i> Instagram
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html> 

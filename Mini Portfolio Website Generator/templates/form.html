@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio Generator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .form-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .dynamic-section {
+            border: 1px dashed #dee2e6;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Animation -->
+    <div class="loading">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <!-- Theme Toggle -->
+    <button class="theme-toggle" title="Toggle Theme">
+        <i class="bi bi-moon-fill"></i>
+    </button>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">Portfolio Generator</a>
+        </div>
+    </nav>
+
+    <div class="container my-5">
+        <h1 class="text-center mb-4 fade-in">Create Your Portfolio</h1>
+        <form action="{{ url_for('preview') }}" method="POST" class="fade-in" id="portfolioForm">
+            <!-- Basic Information -->
+            <div class="form-section">
+                <h3>Basic Information</h3>
+                <div class="mb-3">
+                    <label for="name" class="form-label">Full Name</label>
+                    <input type="text" class="form-control" id="name" name="name" required>
+                    <div class="invalid-feedback">Please enter your name.</div>
+                </div>
+                <div class="mb-3">
+                    <label for="title" class="form-label">Title/Role</label>
+                    <input type="text" class="form-control" id="title" name="title" placeholder="e.g., Software Developer" required>
+                    <div class="invalid-feedback">Please enter your title/role.</div>
+                </div>
+                <div class="mb-3">
+                    <label for="bio" class="form-label">Bio/About Me</label>
+                    <textarea class="form-control" id="bio" name="bio" rows="4" required></textarea>
+                    <div class="invalid-feedback">Please enter your bio.</div>
+                </div>
+                <div class="mb-3">
+                    <label for="skills" class="form-label">Skills (comma separated)</label>
+                    <input type="text" class="form-control" id="skills" name="skills" placeholder="e.g., Python, JavaScript, HTML, CSS" required>
+                    <div class="form-text">Separate skills with commas</div>
+                    <div class="invalid-feedback">Please enter at least one skill.</div>
+                </div>
+            </div>
+
+            <!-- Education -->
+            <div class="form-section">
+                <h3>Education</h3>
+                <div id="education-container">
+                    <div class="dynamic-section education-entry">
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Course</label>
+                                <input type="text" class="form-control" name="course[]" required>
+                                <div class="invalid-feedback">Please enter the course name.</div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Year</label>
+                                <input type="text" class="form-control" name="year[]" required>
+                                <div class="invalid-feedback">Please enter the year.</div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Institute</label>
+                                <input type="text" class="form-control" name="institute[]" required>
+                                <div class="invalid-feedback">Please enter the institute name.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-outline-primary" onclick="addEducation()">
+                    <i class="bi bi-plus-circle"></i> Add Education
+                </button>
+            </div>
+
+            <!-- Projects -->
+            <div class="form-section">
+                <h3>Projects</h3>
+                <div id="projects-container">
+                    <div class="dynamic-section project-entry">
+                        <div class="mb-3">
+                            <label class="form-label">Project Name</label>
+                            <input type="text" class="form-control" name="project_name[]" required>
+                            <div class="invalid-feedback">Please enter the project name.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <textarea class="form-control" name="project_description[]" rows="2" required></textarea>
+                            <div class="invalid-feedback">Please enter the project description.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Tech Stack</label>
+                            <input type="text" class="form-control" name="project_tech[]" placeholder="e.g., React, Node.js, MongoDB">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Project Link (optional)</label>
+                            <input type="url" class="form-control" name="project_link[]">
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-outline-primary" onclick="addProject()">
+                    <i class="bi bi-plus-circle"></i> Add Project
+                </button>
+            </div>
+
+            <!-- Contact Information -->
+            <div class="form-section">
+                <h3>Contact Information</h3>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                    <div class="invalid-feedback">Please enter a valid email address.</div>
+                </div>
+                <div class="mb-3">
+                    <label for="github" class="form-label">GitHub Profile</label>
+                    <input type="url" class="form-control" id="github" name="github" required>
+                    <div class="invalid-feedback">Please enter your GitHub profile URL.</div>
+                </div>
+                <div class="mb-3">
+                    <label for="linkedin" class="form-label">LinkedIn Profile</label>
+                    <input type="url" class="form-control" id="linkedin" name="linkedin" required>
+                    <div class="invalid-feedback">Please enter your LinkedIn profile URL.</div>
+                </div>
+                <div class="mb-3">
+                    <label for="instagram" class="form-label">Instagram Profile (optional)</label>
+                    <input type="url" class="form-control" id="instagram" name="instagram">
+                </div>
+            </div>
+
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary btn-lg">Generate Portfolio</button>
+            </div>
+        </form>
+    </div>
+
+    <footer class="bg-dark text-light py-4 mt-5">
+        <div class="container text-center">
+            <p class="mb-2">Portfolio Generator &copy; 2024 | Created by Yogendra Bhange</p>
+            <div class="social-links">
+                <a href="https://github.com/yogendra-27-bhange" target="_blank" class="text-light me-3">
+                    <i class="bi bi-github"></i> GitHub
+                </a>
+                <a href="https://www.instagram.com/yogi.__27" target="_blank" class="text-light">
+                    <i class="bi bi-instagram"></i> Instagram
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script>
+        // Form validation
+        document.getElementById('portfolioForm').addEventListener('submit', function(e) {
+            if (!this.checkValidity()) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            this.classList.add('was-validated');
+        });
+
+        // Dynamic form fields
+        function addEducation() {
+            const container = document.getElementById('education-container');
+            const template = container.querySelector('.education-entry').cloneNode(true);
+            template.querySelectorAll('input').forEach(input => {
+                input.value = '';
+                input.classList.remove('is-invalid');
+            });
+            container.appendChild(template);
+        }
+
+        function addProject() {
+            const container = document.getElementById('projects-container');
+            const template = container.querySelector('.project-entry').cloneNode(true);
+            template.querySelectorAll('input, textarea').forEach(input => {
+                input.value = '';
+                input.classList.remove('is-invalid');
+            });
+            container.appendChild(template);
+        }
+    </script>
+</body>
+</html> 
